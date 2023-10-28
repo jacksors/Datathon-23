@@ -1,5 +1,6 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from model.predict import predict
 
 class StrokeConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
@@ -28,8 +29,9 @@ class StrokeConsumer(AsyncWebsocketConsumer):
         pass
 
     async def process_stroke(self):
-        print(self.drawing)
+        prediction = predict(self.drawing, "/Users/aidenstickney/Desktop/CS Projects/Datathon-23/model/tut2-model.pt", "/Users/aidenstickney/Desktop/CS Projects/Datathon-23/model/classes.csv")
+        print(prediction)
         await self.send(text_data=json.dumps({
-          'this': 'is a test',
+          'prediction': prediction,
         }))
         pass
