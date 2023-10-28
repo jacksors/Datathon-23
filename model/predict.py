@@ -1,7 +1,7 @@
 import pandas as pd
-from net import net
+from .net import net
 import torch
-from utils.strokes_to_image import strokes_to_image
+from .utils.strokes_to_image import strokes_to_image
 from torchvision import transforms
 import typing as t
 
@@ -17,7 +17,7 @@ def convert(strokes: pd.DataFrame) -> torch.Tensor:
     
     return tensor_img
 
-def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: t.Dict[int, str]) -> int:
+def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: t.Dict[int, str]) -> str:
     model = net.Net()
     model.load_state_dict(torch.load(weights))
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
