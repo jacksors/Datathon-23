@@ -1,8 +1,10 @@
 class WebSocketManager {
   private ws: WebSocket;
+  private onMessageCallback: (message: any) => void;
 
-  constructor(url: string) {
+  constructor(url: string, onMessageCallback: (message: any) => void) {
     this.ws = new WebSocket(url);
+    this.onMessageCallback = onMessageCallback;
 
     this.ws.onopen = () => {
       console.log("WebSocket is open");
@@ -14,6 +16,11 @@ class WebSocketManager {
 
     this.ws.onclose = () => {
       console.log("WebSocket is closed");
+    };
+
+    this.ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      this.handleMessage(message);
     };
   }
 
@@ -33,6 +40,10 @@ class WebSocketManager {
     } else {
       console.log("WebSocket is not open. Cannot send message.");
     }
+  }
+
+  private handleMessage(message: any) {
+    this.onMessageCallback(message);
   }
 }
 

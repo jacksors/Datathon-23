@@ -29,4 +29,7 @@ class StrokeConsumer(AsyncWebsocketConsumer):
 
     async def process_stroke(self):
         print(self.drawing)
+        await self.send(text_data=json.dumps({
+          'this': 'is a test',
+        }))
         pass

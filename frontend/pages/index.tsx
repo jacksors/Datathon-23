@@ -1,19 +1,30 @@
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
+import { useEffect, useState, useRef } from 'react';
 import DrawingCanvas from '../components/DrawingCanvas'
-import WebSocketManager from '../utility/WebSocketManager'
-
-const inter = Inter({ subsets: ['latin'] })
+import WebSocketManager from "../utility/WebSocketManager";
 
 export default function Home() {
-  const wsManager = new WebSocketManager('ws://localhost:8000/ws/stroke/');
+  const url = 'ws://localhost:8000/ws/stroke/';
+  const [message, setMessage] = useState({});
+  const wsManagerRef = useRef<WebSocketManager | null>(null);
 
-  const handleStrokeEnd = (stroke: { xs: number[]; ys: number[] }) => {
-    wsManager.sendStroke(stroke);
+  useEffect(() => {
+    const handleMessage = (message : any) => {
+      console.log('Received message in App component:', message);
+      setMessage(message);
+    };
+
+    // Initialize the WebSocketManager and store it in the ref
+    wsManagerRef.current = new WebSocketManager(url, handleMessage);
+  }, [url]);
+
+  const handleStrokeEnd = (stroke : any) => {
+    // Use the current value of the ref to access the WebSocketManager instance
+    wsManagerRef.current!.sendStroke(stroke);
   };
 
   const handleClear = () => {
-    wsManager.sendClear();
+    // Use the current value of the ref to access the WebSocketManager instance
+    wsManagerRef.current!.sendClear();
   };
 
   return (
