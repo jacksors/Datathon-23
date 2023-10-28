@@ -1,0 +1,4 @@
+**/__pycache__
+model/data
+*.png
+**/tut2-model.pt
