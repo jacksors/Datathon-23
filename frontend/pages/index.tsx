@@ -6,7 +6,7 @@ import WebSocketManager from '../utility/WebSocketManager'
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
-  const wsManager = new WebSocketManager('ws://your-websocket-server-url');
+  const wsManager = new WebSocketManager('ws://localhost:8000/ws/stroke/');
 
   const handleStrokeEnd = (stroke: { xs: number[]; ys: number[] }) => {
     wsManager.sendStroke(stroke);
