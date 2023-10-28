@@ -13,7 +13,7 @@ class Dataset(torch.utils.data.Dataset):
         data = {}
         for file in os.listdir(strokes_dir):
             fname = os.fsdecode(file)
-            df = pd.read_json("/home/jackson/Documents/Datathon/model/data/google/" + fname, lines=True, nrows=100)[['word', 'drawing']]
+            df = pd.read_json("/home/jackson/Documents/Datathon-23/model/data/google/" + fname, lines=True, nrows=100)[['word', 'drawing']]
             if df.shape[0] == 100:
                 data[fname] = df
                 

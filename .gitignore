@@ -2,3 +2,4 @@
 model/data
 *.png
 **/tut2-model.pt
+*.whl

@@ -33,7 +33,7 @@ torch.backends.cudnn.deterministic = True
 
 ROOT = '.data'
 
-all_data = dataset.Dataset(strokes_dir="/home/jackson/Documents/Datathon/model/data/google", limit_samples=True, samples_per_class=200)
+all_data = dataset.Dataset(strokes_dir="/home/jackson/Documents/Datathon-23/model/data/google", limit_samples=True, samples_per_class=200)
 
 train_data, test_data = data.random_split(all_data, [int(len(all_data)*0.8), len(all_data) - int(len(all_data)*0.8)])
 
