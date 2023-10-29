@@ -3,12 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "concurrently \"npm run server\" \"npm run devStart\"",
+    "server": "source ../backend/venv/bin/activate && python ../backend/manage.py runserver",
     "build": "next build",
     "start": "next start",
+    "devStart": "next dev",
     "lint": "next lint"
   },
   "dependencies": {
+    "concurrently": "^8.2.2",
     "next": "14.0.0",
     "react": "^18",
     "react-dom": "^18",
