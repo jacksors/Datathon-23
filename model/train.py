@@ -54,7 +54,7 @@ print(f'The model has {count_parameters(model):,} trainable parameters')
 
 optimizer = optim.Adam(model.parameters())
 
-critereon = nn.CrossEntropyLoss()
+critereon = nn.NLLLoss()
 
 critereon = critereon.to(device)
 

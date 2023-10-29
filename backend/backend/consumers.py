@@ -29,9 +29,10 @@ class StrokeConsumer(AsyncWebsocketConsumer):
         pass
 
     async def process_stroke(self):
-        prediction = predict(self.drawing, "/Users/aidenstickney/Desktop/CS Projects/Datathon-23/model/tut2-model.pt", "/Users/aidenstickney/Desktop/CS Projects/Datathon-23/model/classes.csv")
-        print(prediction)
+        prediction, prob = predict(self.drawing, "/home/jackson/Documents/Datathon-23/model/tut2-model.pt", "/home/jackson/Documents/Datathon-23/model/classes.csv")
+        print(prediction, prob)
         await self.send(text_data=json.dumps({
           'prediction': prediction,
+          'probability': prob,
         }))
         pass

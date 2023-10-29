@@ -28,7 +28,7 @@ const CanvasDraw: React.FC<CanvasDrawProps> = ({ onStrokeEnd, onClear }) => {
     context.scale(2, 2); // Scale by 2 for high DPI displays
     context.lineCap = "round";
     context.strokeStyle = "black";
-    context.lineWidth = 5;
+    context.lineWidth = 3;
     contextRef.current = context;
   }, []);
 

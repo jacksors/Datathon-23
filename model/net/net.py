@@ -25,6 +25,9 @@ class Net(nn.Module):
         self.fc1 = nn.Linear(403680, 84)
         self.fc2 = nn.Linear(84, num_classes)
         
+        # Add a softmax layer at the end to normalize the outputs to probabilities
+        self.log_softmax = nn.LogSoftmax(dim=1)
+        
     def forward(self, x):
                 # Convolutional layer followed by AvgPool
         x = F.relu(self.conv1(x))
@@ -43,5 +46,8 @@ class Net(nn.Module):
         # Fully connected layers
         x = F.relu(self.fc1(x))
         x = self.fc2(x)  # No activation is applied in the output layer as it will be used in the loss calculation, e.g., CrossEntropy
+        
+        # Softmax layer
+        x = self.log_softmax(x)
 
         return x

@@ -4,6 +4,8 @@ import torch
 from .utils.strokes_to_image import strokes_to_image
 from torchvision import transforms
 import typing as t
+import csv
+import numpy as np
 
 def convert(strokes: pd.DataFrame) -> torch.Tensor:
     image = strokes_to_image(strokes)
@@ -17,7 +19,12 @@ def convert(strokes: pd.DataFrame) -> torch.Tensor:
     
     return tensor_img
 
-def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: t.Dict[int, str]) -> str:
+def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: str) -> str:
+    map = {}
+    with open(val_to_string_map, "r") as f:
+        reader = csv.reader(f)
+        map = {int(rows[0]): rows[1] for rows in reader}
+    
     model = net.Net()
     model.load_state_dict(torch.load(weights))
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
@@ -29,6 +36,5 @@ def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: t.Dict[int, 
         predictions = model(tensor_img)
         
         # Get the predicted class with the highest score
-        _, predicted = torch.max(predictions.data, 1)
-            
-        return val_to_string_map[predicted.item()]
+        prob, predicted = torch.max(predictions.data, 1)
+        return map[predicted.item()], np.exp(prob.item())
