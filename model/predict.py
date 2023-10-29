@@ -26,7 +26,7 @@ def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: str) -> str:
         map = {int(rows[0]): rows[1] for rows in reader}
     
     model = net.Net()
-    model.load_state_dict(torch.load(weights))
+    model.load_state_dict(torch.load(weights, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu')))
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
     tensor_img = convert(strokes).to(device).unsqueeze(0)

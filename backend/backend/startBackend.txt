@@ -1,0 +1,1 @@
+export PYTHONPATH="${PYTHONPATH}:/Users/aidenstickney/Desktop/CS Projects/Datathon-23"
