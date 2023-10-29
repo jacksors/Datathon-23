@@ -7,7 +7,7 @@ The model is a custom PyTorch model similar to ResNet 18 but adapted for our spe
 ## Challenges we ran into
 Overfitting was a recurring problem during training. This was mitigated by lowering learning rate, increasing dropout rate, and adjusting batch size continuously until we could no longer decrease loss by any of these methods.
 ## Accomplishments that we're proud of
-The model completed training with a 0.9 validation accuracy. Furthermore the classes had relatively consistent F1 scores with the lowest at 0.84.
+The model completed training with a 0.9 validation accuracy. Furthermore the classes had relatively consistent F1 scores with the lowest at 0.82.
 ## What we learned
 We learned about all of the nuances it takes to build and train a successful image classification model. 
 ## What's next for DoodleDuel
