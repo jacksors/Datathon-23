@@ -4,14 +4,14 @@ import WebSocketManager from "../utility/WebSocketManager";
 import PredictionCheckerModal from '../components/PredictionCheckerModal';
 
 export default function Home() {
-  const url = 'ws://localhost:8000/ws/stroke/';
+  const url = "ws://35.193.116.228:8000/ws/stroke/";
   const [message, setMessage] = useState<string>('Start drawing to get a prediction!');
   const [probability, setProbability] = useState<number>(0);
   const [isModalOpen, setModalOpen] = useState(false);
   const wsManagerRef = useRef<WebSocketManager | null>(null);
 
   useEffect(() => {
-    const handleMessage = (message : any) => {
+    const handleMessage = (message: any) => {
       console.log('Received message in App component:', message);
       setMessage(message.prediction);
       setProbability(message.probability * 100);
@@ -21,7 +21,7 @@ export default function Home() {
     wsManagerRef.current = new WebSocketManager(url, handleMessage);
   }, [url]);
 
-  const handleStrokeEnd = (stroke : any) => {
+  const handleStrokeEnd = (stroke: any) => {
     // Use the current value of the ref to access the WebSocketManager instance
     wsManagerRef.current!.sendStroke(stroke);
   };
@@ -50,12 +50,12 @@ export default function Home() {
         Let's Draw!
       </p>
       <p className="text-2xl text-center pb-2">
-      {message.toString()}
-        </p>
-        <p className="text-2xl text-center pb-2">
+        {message.toString()}
+      </p>
+      <p className="text-2xl text-center pb-2">
         {probability != 0 ? "Confidence: " + probability.toFixed(2).toString() + "%" : ""}
-        </p>
-      <DrawingCanvas onStrokeEnd={handleStrokeEnd} onClear={handleClear}/>
+      </p>
+      <DrawingCanvas onStrokeEnd={handleStrokeEnd} onClear={handleClear} />
       <PredictionCheckerModal
         prediction={message}
         isOpen={isModalOpen}
@@ -63,14 +63,14 @@ export default function Home() {
         onSave={handleSaveStroke}
       />
       {
-        message && (probability != 0) && (probability < 50) ? 
-        <button
-          className="fixed mb-5 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 ease-in-out bottom-0"
-          onClick={() => setModalOpen(true)}
-        >
-          <p>Provide Feedback</p>
-        </button>
-        : <></>
+        message && (probability != 0) && (probability < 50) ?
+          <button
+            className="fixed mb-5 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 ease-in-out bottom-0"
+            onClick={() => setModalOpen(true)}
+          >
+            <p>Provide Feedback</p>
+          </button>
+          : <></>
       }
     </main>
   )
