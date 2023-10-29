@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run devStart\"",
     "server": "source ../backend/venv/bin/activate && python ../backend/manage.py runserver",
+    "jacksondev" : "concurrently \"npm run devStart\" \"npm run jacksonserver\"",
+    "jacksonserver": "python ../backend/manage.py runserver",
     "build": "next build",
     "start": "next start",
     "devStart": "next dev",
