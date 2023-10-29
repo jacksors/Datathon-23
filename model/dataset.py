@@ -13,18 +13,20 @@ class Dataset(torch.utils.data.Dataset):
         data = {}
         for file in os.listdir(strokes_dir):
             fname = os.fsdecode(file)
-            df = pd.read_json("/home/jackson/Documents/Datathon-23/model/data/google/" + fname, lines=True, nrows=100)[['word', 'drawing']]
-            if df.shape[0] == 100:
-                data[fname] = df
+            if limit_samples:
+                df = pd.read_json(strokes_dir + fname, lines=True, nrows=samples_per_class)[['category', 'strokes']]
+            else:
+                df = pd.read_json(strokes_dir + fname, lines=True)[['category', 'strokes']]
+            data[fname] = df
                 
         data = pd.concat(data, ignore_index=True)
         self.df = data
         self.img_transform = img_transform
         self.label_transform = label_transform
-        unique_classes = self.df['word'].unique()
+        self.unique_classes = self.df['category'].unique()
 
         # Create a dictionary of classes and their corresponding index
-        self.class_to_idx = {unique_classes[i]: i for i in range(len(unique_classes))}
+        self.class_to_idx = {self.unique_classes[i]: i for i in range(len(self.unique_classes))}
         
         # Save to a csv for later use
         with open("classes.csv", "w+") as f:

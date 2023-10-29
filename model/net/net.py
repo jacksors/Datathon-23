@@ -2,52 +2,74 @@ import torch
 from torch import nn
 from torch.nn import functional as F
 
-class Net(nn.Module):
-    def __init__(self, num_classes: int = 10):
-        super(Net, self).__init__()
-        
-        # Since the input image is a high-resolution 256x256 image (compared to the original 32x32 input size),
-        # we need to adapt the convolutional layers to capture more information,
-        # and potentially introduce additional layers or increase the kernel sizes.
-        
-        self.conv1 = nn.Conv2d(1, 6, kernel_size=5, stride=1, padding=2) # 1 input channel, 6 output channels, 5x5 kernel
-        self.conv2 = nn.Conv2d(6, 16, kernel_size=5, stride=1, padding=0)
-        self.conv3 = nn.Conv2d(16, 120, kernel_size=5, stride=1, padding=0)
-        
-        # We also need to adapt the fully connected layers to handle the larger amount of information.
-        # As the image size is significantly larger, the feature map size before the first fully connected layer
-        # will be bigger than that in the original LeNet model for 32x32 images.
-
-        # To calculate the size of the feature maps before the first fully connected layer,
-        # one needs to account for the operations in the convolutional layers and the pooling layers.
-        # Here, we assume that the feature map has a size of (120 * 28 * 28) before the fully connected layers.
-        
-        self.fc1 = nn.Linear(403680, 84)
-        self.fc2 = nn.Linear(84, num_classes)
-        
-        # Add a softmax layer at the end to normalize the outputs to probabilities
-        self.log_softmax = nn.LogSoftmax(dim=1)
+class Block(nn.Module):
+    def __init__(self, in_channels: int, out_channels: int, downsample: bool):
+        super().__init__()
+        if downsample:
+            self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=2, padding=1)
+            self.shortcut = nn.Sequential(
+                nn.Conv2d(in_channels, out_channels, kernel_size=1, stride=2),
+                nn.BatchNorm2d(out_channels)
+            )
+        else:
+            self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1)
+            self.shortcut = nn.Sequential()
+            
+        self.conv2 = nn.Conv2d(out_channels, out_channels, kernel_size=3, stride=1, padding=1)
+        self.bn1 = nn.BatchNorm2d(out_channels)
+        self.bn2 = nn.BatchNorm2d(out_channels)
         
     def forward(self, x):
-                # Convolutional layer followed by AvgPool
-        x = F.relu(self.conv1(x))
-        x = F.avg_pool2d(x, 2)
+        shortcut = self.shortcut(x)
+        x = nn.ReLU()(self.bn1(self.conv1(x)))
+        x = nn.ReLU()(self.bn2(self.conv2(x)))
+        x = x + shortcut
+        return nn.ReLU()(x)
 
-        # Second convolutional layer followed by AvgPool
-        x = F.relu(self.conv2(x))
-        x = F.avg_pool2d(x, 2)
+class Net(nn.Module):
+    def __init__(self, num_classes: int = 10):
+        super().__init__()
+        self.layer0 = nn.Sequential(
+            nn.Conv2d(1, 64, kernel_size=7, stride=2, padding=3),
+            nn.MaxPool2d(kernel_size=3, stride=2, padding=1),
+            nn.BatchNorm2d(64),
+            nn.ReLU()
+        )
 
-        # Third convolutional layer
-        x = F.relu(self.conv3(x))
+        self.layer1 = nn.Sequential(
+            Block(64, 64, downsample=False),
+            Block(64, 64, downsample=False)
+        )
 
-        # Flattening the tensor to a vector for the fully connected layers
-        x = torch.flatten(x, 1)
+        self.layer2 = nn.Sequential(
+            Block(64, 128, downsample=True),
+            Block(128, 128, downsample=False)
+        )
 
-        # Fully connected layers
-        x = F.relu(self.fc1(x))
-        x = self.fc2(x)  # No activation is applied in the output layer as it will be used in the loss calculation, e.g., CrossEntropy
-        
-        # Softmax layer
-        x = self.log_softmax(x)
+        self.layer3 = nn.Sequential(
+            Block(128, 256, downsample=True),
+            Block(256, 256, downsample=False)
+        )
+
+
+        self.layer4 = nn.Sequential(
+            Block(256, 512, downsample=True),
+            Block(512, 512, downsample=False)
+        )
+
+        self.gap = torch.nn.AdaptiveAvgPool2d(1)
+        self.fc = torch.nn.Linear(512, num_classes)
+
+    def forward(self, x):
+        x = self.layer0(x)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = self.gap(x)
+        x = torch.flatten(x, start_dim=1)
+        x = self.fc(x)
 
         return x
+
+
