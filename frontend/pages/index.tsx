@@ -33,6 +33,11 @@ export default function Home() {
     setProbability(0);
   };
 
+  const handleSaveStroke = (name: string) => {
+    // Use the current value of the ref to access the WebSocketManager instance
+    wsManagerRef.current!.saveStroke(name);
+  };
+
   const handleCloseModal = () => {
     setModalOpen(false);
   };
@@ -55,6 +60,7 @@ export default function Home() {
         prediction={message}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
+        onSave={handleSaveStroke}
       />
       {
         message && (probability != 0) && (probability < 50) ? 

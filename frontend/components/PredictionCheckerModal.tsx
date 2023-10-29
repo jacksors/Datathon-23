@@ -4,9 +4,10 @@ interface Props {
   prediction: string;
   isOpen: boolean;
   onClose: () => void;
+  onSave: (name: string) => void;
 }
 
-function PredictionCheckerModal({ prediction, isOpen, onClose } : Props) {
+function PredictionCheckerModal({ prediction, isOpen, onClose, onSave } : Props) {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [actualDrawing, setActualDrawing] = useState('');
 
@@ -24,7 +25,16 @@ function PredictionCheckerModal({ prediction, isOpen, onClose } : Props) {
   };
 
   const handleSubmit = () => {
+    if (actualDrawing === '') {
+      alert('Please enter what you actually drew.');
+      return;
+    }
+    if (actualDrawing.includes(' ')) {
+      alert('Please enter a single word.');
+      return;
+    }
     alert(`Got it! You actually drew a ${actualDrawing}.`);
+    onSave(actualDrawing);
     onClose();
     setIsCorrect(null);
   };

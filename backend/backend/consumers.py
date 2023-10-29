@@ -1,6 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from model.predict import predict
+import pickle
 
 class StrokeConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
@@ -17,6 +18,9 @@ class StrokeConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
         if 'clear' in data and data['clear'] is True:
             await self.clear_canvas()
+        elif 'save' in data and data['save'] is True:
+            if 'name' in data:
+                await self.save_stroke(data['name'])
         else:
             xs = data['xs']
             ys = data['ys']
@@ -35,4 +39,8 @@ class StrokeConsumer(AsyncWebsocketConsumer):
           'prediction': prediction,
           'probability': prob,
         }))
+        pass
+
+    async def save_stroke(self, name):
+        pickle.dump(self.drawing, open(f'data/{name}.pkl', 'wb'))
         pass

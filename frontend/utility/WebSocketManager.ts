@@ -33,6 +33,15 @@ class WebSocketManager {
     }
   }
 
+  saveStroke(name: string) {
+    if (this.ws.readyState === WebSocket.OPEN) {
+      const message = JSON.stringify({save: true, name: name });
+      this.ws.send(message);
+    } else {
+      console.log("WebSocket is not open. Cannot send message.");
+    }
+  }
+
   sendClear() {
     if (this.ws.readyState === WebSocket.OPEN) {
       const message = JSON.stringify({ clear: true });
