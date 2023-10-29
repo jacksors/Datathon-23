@@ -4,6 +4,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_http_methods
 from model.predict import predict
 from backend.strokes_storage import add_stroke, clear_strokes, get_strokes
+from django.shortcuts import render
+
+def handleHome(request):
+    # Your logic for handling the root URL '/'
+    return render(request, 'home.html')
 
 @csrf_exempt  # Disables CSRF protection for this view. Be cautious about doing this in production.
 @require_http_methods(["POST"])  # Allows only POST requests.
