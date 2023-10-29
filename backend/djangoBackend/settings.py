@@ -29,6 +29,7 @@ ALLOWED_HOSTS = ['*']  # Warning: this is not a safe configuration for productio
 
 
 
+
 # Application definition
 
 INSTALLED_APPS = [
