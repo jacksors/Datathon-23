@@ -83,7 +83,7 @@ const CanvasDraw: React.FC<CanvasDrawProps> = ({ onStrokeEnd, onClear }) => {
       className="bg-white block"
     />
     </div>
-    <button onClick={clearCanvas} className="w-fit px-4 py-2 bg-blue-600 rounded mt-2">
+    <button onClick={clearCanvas} className="w-fit px-4 py-2 bg-blue-600 rounded mt-2 hover:bg-blue-800">
         Clear
       </button>
     </div>

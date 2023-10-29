@@ -1,11 +1,13 @@
 import { useEffect, useState, useRef } from 'react';
 import DrawingCanvas from '../components/DrawingCanvas'
 import WebSocketManager from "../utility/WebSocketManager";
+import PredictionCheckerModal from '../components/PredictionCheckerModal';
 
 export default function Home() {
   const url = 'ws://localhost:8000/ws/stroke/';
   const [message, setMessage] = useState<string>('Start drawing to get a prediction!');
   const [probability, setProbability] = useState<number>(0);
+  const [isModalOpen, setModalOpen] = useState(false);
   const wsManagerRef = useRef<WebSocketManager | null>(null);
 
   useEffect(() => {
@@ -31,6 +33,10 @@ export default function Home() {
     setProbability(0);
   };
 
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
   return (
     <main
       className="h-[calc(100dvh)] w-screen flex flex-col justify-center items-center bg-neutral-900"
@@ -45,6 +51,21 @@ export default function Home() {
         {probability != 0 ? "Confidence: " + probability.toFixed(2).toString() + "%" : ""}
         </p>
       <DrawingCanvas onStrokeEnd={handleStrokeEnd} onClear={handleClear}/>
+      <PredictionCheckerModal
+        prediction={message}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+      />
+      {
+        message && (probability != 0) && (probability < 50) ? 
+        <button
+          className="fixed mb-5 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors duration-200 ease-in-out bottom-0"
+          onClick={() => setModalOpen(true)}
+        >
+          <p>Provide Feedback</p>
+        </button>
+        : <></>
+      }
     </main>
   )
 }
