@@ -16,9 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from backend.views import handlePredict
+from backend.views import handlePredict, handleGuess, handleNewCase, handleScore
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('predict/', handlePredict, name='predict'),
+    path('guess/', handleGuess, name='guess'),
+    path('newcase/', handleNewCase, name='newcase'),
+    path('score/', handleScore, name='score'),
 ]

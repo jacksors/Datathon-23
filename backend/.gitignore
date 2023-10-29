@@ -109,3 +109,5 @@ celerybeat-schedule
 
 # VS Code settings
 .vscode/
+
+venv/
