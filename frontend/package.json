@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "concurrently \"npm run server\" \"npm run devStart\"",
     "server": "source ../backend/venv/bin/activate && python ../backend/manage.py runserver",
-    "jacksondev" : "concurrently \"npm run devStart\" \"npm run jacksonserver\"",
+    "jacksondev": "concurrently \"npm run devStart\" \"npm run jacksonserver\"",
     "jacksonserver": "python ../backend/manage.py runserver",
     "build": "next build",
     "start": "next start",
@@ -17,6 +17,7 @@
     "next": "14.0.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-icons": "^4.11.0",
     "socket.io": "^4.7.2",
     "socket.io-client": "^4.7.2"
   },

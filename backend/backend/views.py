@@ -68,11 +68,7 @@ def handleGuess(request):
 @csrf_exempt  # Disables CSRF protection for this view. Be cautious about doing this in production.
 @require_http_methods(["POST"])  # Allows only POST requests.
 def handleNewCase(request):
-    save_strokes = get_strokes()
-    rn = np.random.randint(0, 1000)
-    pickle.dump(save_strokes, open(f"../model/newcase_{rn}.pkl", "wb"))
-    print(f"Saved new case to ../model/newcase_{rn}.pkl")
-            
+
     clear_strokes()
 
     # Return a HTTP response.

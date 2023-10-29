@@ -1,6 +1,7 @@
 **/__pycache__
 model/data
-*.png
+**/img.png
 **/tut2-model.pt
 *.whl
 backend/dump.rdb
+**/dump.rdb
