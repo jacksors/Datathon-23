@@ -42,5 +42,5 @@ class StrokeConsumer(AsyncWebsocketConsumer):
         pass
 
     async def save_stroke(self, name):
-        pickle.dump(self.drawing, open(f'data/{name}.pkl', 'wb'))
+        pickle.dump(self.drawing, open(f'/home/jackson/Documents/Datathon-23/backend/backend/data/{name}.pkl', 'wb+'))
         pass

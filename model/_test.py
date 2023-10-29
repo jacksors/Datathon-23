@@ -1,15 +1,18 @@
-from predict import predict
+from _predict import predict
 import os
 import pandas as pd
 import csv
 import numpy as np
-
-df = pd.read_json("/home/jackson/Documents/Datathon-23/model/data/google/full_simplified_apple.ndjson", lines=True, nrows=1)['drawing']
-
-map = {}
-with open("/home/jackson/Documents/Datathon-23/model/classes.csv", "r") as f:
-    reader = csv.reader(f)
-    map = {int(rows[0]): rows[1] for rows in reader}
+import pickle
     
-
-print(predict(df[0], '/home/jackson/Documents/Datathon-23/tut2-model.pt', map))
+# loop through all of the files in the directory
+for filename in os.listdir("/home/jackson/Documents/Datathon-23/model"):
+    if filename.startswith("newcase"):
+        df = pd.read_pickle("/home/jackson/Documents/Datathon-23/model/" + filename)
+        print(filename)
+        input()
+        try:
+            print(predict(df, '/home/jackson/Documents/Datathon-23/tut2-model.pt', "/home/jackson/Documents/Datathon-23/model/classes.csv"))
+        except Exception as e:
+            raise(e)
+    

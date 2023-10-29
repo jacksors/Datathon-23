@@ -3,6 +3,7 @@ import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
 import torch.utils.data as data
+import os
 
 import torchvision.transforms as transforms
 import torchvision.datasets as datasets
@@ -61,7 +62,7 @@ def train(strokes_dir = "/home/jackson/Documents/Datathon-23/model/data/datathon
 
     print(f'The model has {count_parameters(model):,} trainable parameters')
 
-    optimizer = optim.Adam(model.parameters())
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
 
     critereon = nn.CrossEntropyLoss()
 
@@ -137,12 +138,36 @@ def train(strokes_dir = "/home/jackson/Documents/Datathon-23/model/data/datathon
 
     no_improvement_counter = 0
 
+    plt.ion()
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.set_xlabel('Epoch')
+    ax.set_ylabel('Loss')
+    ax.set_title('Loss vs. Number of Training Epochs')
+    line, = ax.plot([], [], color='blue', lw=2)
+    
+    valid_losses = []
+    
+    # if current weights exist, load them
+    if os.path.exists('tut2-model.pt'):
+        model.load_state_dict(torch.load('tut2-model.pt'))
+        print("loaded weights")
+    
     for epoch in trange(epochs if epochs != "auto" else 1000, desc="Epochs"):
 
         start_time = time.monotonic()
 
         train_loss, train_acc = train(model, train_iterator, optimizer, critereon, device)
         valid_loss, valid_acc = evaluate(model, valid_iterator, critereon, device)
+        
+        valid_losses.append(valid_loss)
+        
+        line.set_xdata(range(1, epoch + 2))
+        line.set_ydata(valid_losses)
+        ax.set_xlim(1, epoch + 2)
+        ax.set_ylim(min(valid_losses) - 0.01, max(valid_losses) + 0.01)
+        
+        fig.canvas.draw()
+        fig.canvas.flush_events()
 
         if valid_loss < best_valid_loss:
             best_valid_loss = valid_loss
@@ -188,4 +213,4 @@ def train(strokes_dir = "/home/jackson/Documents/Datathon-23/model/data/datathon
     print(classification_report(ys, y_hats))
 
 if __name__ == "__main__":
-    train(batch_size=64, samples_per_class=500, learning_rate=0.01)
+    train(batch_size=32, learning_rate=0.000001, epochs=1000)

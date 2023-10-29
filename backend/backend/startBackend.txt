@@ -1,1 +1,2 @@
 export PYTHONPATH="${PYTHONPATH}:/Users/aidenstickney/Desktop/CS Projects/Datathon-23"
+export PYTHONPATH="${PYTHONPATH}:/home/jackson/Documents/Datathon-23"     

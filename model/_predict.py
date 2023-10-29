@@ -1,7 +1,7 @@
 import pandas as pd
-from .net import net
+from net import net
 import torch
-from .utils.strokes_to_image import strokes_to_image
+from utils.strokes_to_image import strokes_to_image
 from torchvision import transforms
 import typing as t
 import csv
@@ -26,7 +26,7 @@ def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: str) -> str:
         reader = csv.reader(f)
         map = {int(rows[0]): rows[1] for rows in reader}
     
-    model = net.Net(len(map.keys()))
+    model = net.Net(len(map.keys()), True)
     model.load_state_dict(torch.load(weights, map_location=torch.device('cuda' if torch.cuda.is_available() else 'cpu')))
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = model.to(device)
@@ -38,4 +38,5 @@ def predict(strokes: pd.DataFrame, weights: str, val_to_string_map: str) -> str:
         
         # Get the predicted class with the highest score
         prob, predicted = torch.max(predictions.data, 1)
+        model.visualize_feature_maps("/home/jackson/Documents/Datathon-23/model/imgs")
         return map[predicted.item()], F.softmax(predictions, dim=1)[0][predicted].item()
