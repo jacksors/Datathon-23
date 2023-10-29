@@ -4,7 +4,7 @@ import WebSocketManager from "../utility/WebSocketManager";
 import PredictionCheckerModal from '../components/PredictionCheckerModal';
 
 export default function Home() {
-  const url = "ws://35.193.116.228:8000/ws/stroke/";
+  const url = "ws://quotesbot.xyz:8000/ws/stroke/";
   const [message, setMessage] = useState<string>('Start drawing to get a prediction!');
   const [probability, setProbability] = useState<number>(0);
   const [isModalOpen, setModalOpen] = useState(false);
